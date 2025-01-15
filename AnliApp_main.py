@@ -36,6 +36,7 @@ def send(message):
     else:
         bot.send_message(id_send, f'⚠️@{message.from_user.username} пытался воспользоваться командой send ⚠️\nUser id: {message.from_user.id} \nUser name: {user_name}\n🤖: AnliApp_bot ')  # Отправка сообщения в канал
         return
+
 @bot.callback_query_handler(func=lambda call: call.data in ['all_users', 'show_all_users', 'specific_user', 'close'])
 def settings_for_administration(call):
     if (call.data == 'all_users'):
@@ -103,6 +104,7 @@ def specific_user(message):
     user_id = int(message.text)
     text = bot.send_message(message.chat.id, f'Write the text\n(write /stop to stop)')
     bot.register_next_step_handler(text, send_text_specific_user, user_id)
+
 def send_text_specific_user(message, user_id):
     if (message.text == '/stop'):
         return
@@ -144,6 +146,7 @@ def pass_in_maillig_list(user_id: int, username: str, user_name: str, user_serna
                             user_sername TEXT)'''.format(table_with_mailling_list))
     cursor.execute(f'INSERT INTO {table_with_mailling_list} (user_id, username, user_name, user_sername) VALUES (?, ?, ?, ?)', (user_id, username, user_name, user_sername))
     conn.commit()
+
 #####################
 # Функция для создания профиля (создается таблица с названием user_id и инициализирует столбы)
 # Некоторые столбцы инициализируются, а некоторые нет
@@ -165,11 +168,13 @@ def create_table_and_pass(user_id: int, user_name: str, user_sername: str):
     cursor.execute(f'INSERT INTO {us_id} (user_id, user_name, user_sername, count_of_solves, co_solves_per_one, mode, point, sol_help) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', (user_id, user_name, user_sername, 0, 20, 0, 0, 0))
     conn.commit()
 # Функция, которая нужна непосредственно для работы с таблицей (вставка слов)
+
 def pass_words(user_id: int, first_word: str, second_word: str):
     us_id = "user_" + str(user_id)
     cursor.execute(f'INSERT INTO {us_id} (first_word, second_word, point) VALUES (?, ?, ?)', (first_word, second_word, 0))
     conn.commit()
 # Функция чтобы вставить какое-то значение численное
+
 def pass_value(user_id: int, value, row_number: int, column_name: str):
     us_id = "user_" + str(user_id)
     cursor.execute(f"UPDATE {us_id} SET {column_name}=? WHERE rowid=?", (value, row_number))
